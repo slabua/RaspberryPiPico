@@ -1,10 +1,10 @@
-from machine import Pin, PWM
+from machine import Pin, ADC, PWM
 from time import sleep
 
 
-sensor_temp = machine.ADC(4)
+sensor_temp = ADC(4)
 
-pwm = machine.PWM(machine.Pin(25))
+pwm = PWM(Pin(25))
 pwm.freq(1000)
 
 conversion_factor = 3.3 / (65535)
