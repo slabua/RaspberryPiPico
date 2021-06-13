@@ -46,7 +46,7 @@ TODO
 ### Battery
 - A: Go to Home screen
 - B: Cycle Brightness presets
-- X: -
+- X: Continuous / Discrete battery representation
 - Y: Cycle Graphics style
 - Y+B: Show Info scroll banner (hold)
 
@@ -74,6 +74,7 @@ TODO
 ### Stats
 - A: Go to Home screen
 - B: Cycle Brightness presets
-- X: -
+- X: Update Configuration file
 - Y: Reset uptime
+- X+B: Reset Configuration file
 - Y+B: Show Info scroll banner (hold)
