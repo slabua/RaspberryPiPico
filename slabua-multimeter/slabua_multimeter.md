@@ -19,6 +19,8 @@
     - (internal ADC on pin 4)
   - DS18B20 Temperature sensor
     - (currently up to 3 in parallel)
+- Work in progress
+  - Connection for Battery/Fuel/Rpm readings
 
 ## Wiring Diagram
 ### Breadboard
