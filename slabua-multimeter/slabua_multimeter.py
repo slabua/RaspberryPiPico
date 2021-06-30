@@ -9,7 +9,7 @@ import framebuf
 import gc
 
 import slabua_multimeter_bgimg as slbmmbg
-import slabua_multimeter_config as slbconfig
+import slabua_multimeter_env as slbenv
 
 
 # Timer
@@ -18,6 +18,7 @@ start_time = utime.time()
 
 
 # Parameters
+STATE_FILE = "state.json"
 CONFIG_FILE = "config.json"
 USE_BG_IMAGE = False
 BG_IMAGE_SLOW_LOADING = True
@@ -54,7 +55,8 @@ SCREENS = ["HOME", "BATTERY", "FUEL", "TEMPERATURE", "RPM", "STATS"]  # TODO fin
 
 
 # Variables initialisation
-[LAYOUT_PEN_ID, RPM_LAYOUT_ID, SPLIT_BARS, LARGE_BATTERY, BATTERY_ICON_DISCRETE, BV] = slbconfig.read_config(CONFIG_FILE)
+[LAYOUT_PEN_ID, RPM_LAYOUT_ID, SPLIT_BARS, LARGE_BATTERY, BATTERY_ICON_DISCRETE, BV] = slbenv.read_state(STATE_FILE)
+[USE_BG_IMAGE, BG_IMAGE_SLOW_LOADING, FUEL_RESERVE, RPM_MAX, RPM_REDLINE, BATTERY_TH, TEMP_TH, INFO_TEXT] = slbenv.read_config(CONFIG_FILE)
 
 temp_id = 0
 onewire_sensors = 0
@@ -94,12 +96,12 @@ def acq_adc(adc):
     return adc.read_u16()
 
 def acq_temp(adc):
-    CONVERSION_FACTOR = 3.3 / (65535)
+    CONVERSION_FACTOR = 3.3 / 65535
     reading = acq_adc(adc) * CONVERSION_FACTOR
     return 27 - (reading - 0.706) / 0.001721
 
-def scale_value(value, min_value, max_value):
-    return ((value - 0) / (65535 - 0)) * (max_value - min_value) + min_value
+def scale_value(value, min_value, max_value, max_range):
+    return ((value - 0) / (max_range - 0)) * (max_value - min_value) + min_value
 
 def ds_scan_roms(ds_sensor, resolution):
     roms = ds_sensor.scan()
@@ -248,7 +250,7 @@ def int_b(pin):
         
         elif current_screen == 5:
             # TODO Debouncing might cause the config file overwriting once again after initialisation
-            [LAYOUT_PEN_ID, RPM_LAYOUT_ID, SPLIT_BARS, LARGE_BATTERY, BATTERY_ICON_DISCRETE, BV] = slbconfig.initialise_config(CONFIG_FILE)
+            [LAYOUT_PEN_ID, RPM_LAYOUT_ID, SPLIT_BARS, LARGE_BATTERY, BATTERY_ICON_DISCRETE, BV] = slbenv.initialise_state(STATE_FILE)
             blink_led(0.2, 0, 255, 255)
 
     else:
@@ -288,7 +290,7 @@ def int_x(pin):
         RPM_LAYOUT_ID = (RPM_LAYOUT_ID + 1) % 5
 
     elif current_screen == 5:
-        slbconfig.write_config(CONFIG_FILE, LAYOUT_PEN_ID, RPM_LAYOUT_ID, SPLIT_BARS, LARGE_BATTERY, BATTERY_ICON_DISCRETE, BV)
+        slbenv.write_state(STATE_FILE, LAYOUT_PEN_ID, RPM_LAYOUT_ID, SPLIT_BARS, LARGE_BATTERY, BATTERY_ICON_DISCRETE, BV)
         blink_led(0.2, 0, 0, 255)
 
     utime.sleep(BUTTON_DEBOUNCE_TIME)
@@ -356,7 +358,7 @@ def draw_home_layout(pen):
     display.rectangle(0, round(height / 4 * 3), width, 2)
 
 def draw_home_fuel():
-    reading = scale_value(acq_adc(adc1), 0, 100)
+    reading = scale_value(acq_adc(adc1), 0, 100, 65535)
     
     display.set_pen(255, 196, 0)
     if reading < FUEL_RESERVE:
@@ -370,7 +372,7 @@ def draw_home_fuel():
             display.rectangle(r, 5, 2, 25)
 
 def draw_home_battery():
-    reading = scale_value(acq_adc(adc0), 0, 15)
+    reading = scale_value(acq_adc(adc0), 0, 16, 65535)
     
     set_battery_pen(reading)
     display.text("{:.2f}".format(reading), 150, 41, width, 3)
@@ -415,7 +417,7 @@ def draw_home_temperature():
             display.text("{:.2f}".format(temperature), temp_x_pos + (temp_x_tn * (ows + 1)), 75, width, 3)
 
 def draw_home_rpm():
-    reading = scale_value(acq_adc(adc2), 0, RPM_MAX)
+    reading = scale_value(acq_adc(adc2), 0, RPM_MAX, 65535)
     
     at_redline_width = round((width - 100 - CLIP_MARGIN) * RPM_REDLINE / RPM_MAX)
     rpm_width = round((width - 100 - CLIP_MARGIN) * reading / RPM_MAX)
@@ -470,7 +472,7 @@ def screen_home():
 def screen_battery():
     display_clear()
     
-    reading = scale_value(acq_adc(adc0), 0, 15)
+    reading = scale_value(acq_adc(adc0), 0, 16, 65535)
     print("ADC0: " + str(reading))
     
     set_battery_pen(reading)
@@ -542,7 +544,7 @@ def screen_battery():
 def screen_fuel():
     display_clear()
     
-    reading = scale_value(acq_adc(adc1), 0, 100)
+    reading = scale_value(acq_adc(adc1), 0, 100, 65535)
     print("ADC1: " + str(reading))
 
     display.set_pen(255, 196, 0)
@@ -601,7 +603,7 @@ def screen_temperature():
 def screen_rpm():
     display_clear()
 
-    reading = scale_value(acq_adc(adc2), 0, RPM_MAX)
+    reading = scale_value(acq_adc(adc2), 0, RPM_MAX, 65535)
     print(reading)
 
     """

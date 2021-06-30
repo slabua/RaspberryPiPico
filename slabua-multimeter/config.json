@@ -1,1 +1,10 @@
-{"LAYOUT_PEN_ID": 0, "RPM_LAYOUT_ID": 2, "SPLIT_BARS": true, "LARGE_BATTERY": true, "BATTERY_ICON_DISCRETE": false, "BV": 2}
+{
+    "USE_BG_IMAGE": false,
+    "BG_IMAGE_SLOW_LOADING": true,
+    "FUEL_RESERVE": 25,
+    "RPM_MAX": 12000,
+    "RPM_REDLINE": 10000,
+    "BATTERY_TH": [11, 12],
+    "TEMP_TH": [19, 24],
+    "INFO_TEXT": "Salvatore La Bua - http://twitter.com/slabua"
+}
