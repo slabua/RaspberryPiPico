@@ -1,0 +1,3 @@
+[submodule "slabua-multimeter"]
+	path = slabua-multimeter
+	url = git@github.com:slabua/PicoMotorcycleDashboard.git
