@@ -1,0 +1,3 @@
+[submodule "picomotodash"]
+	path = picomotodash
+	url = git@github.com:slabua/PicoMotorcycleDashboard.git
