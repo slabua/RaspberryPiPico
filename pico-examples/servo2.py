@@ -11,16 +11,8 @@ servo.freq(50)
 
 while True:
     for i in range((8400-1600)/20):
-        # Move servo to zero degrees (2 per cent duty cycle)
         servo.duty_u16(int(1600+i*20))
         utime.sleep(0.001)
-        # Move servo to 180 degrees (12 per cent duty cycle)
-        # servo.duty_u16(8400)
-        # utime.sleep(0.5)
     for i in range((8400-1600)/20):
-        # Move servo to zero degrees (2 per cent duty cycle)
         servo.duty_u16(int(8400-i*20))
         utime.sleep(0.005)
-        # Move servo to 180 degrees (12 per cent duty cycle)
-        # servo.duty_u16(8400)
-        # utime.sleep(0.5)
