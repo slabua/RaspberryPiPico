@@ -114,3 +114,4 @@ print("rainbow")
 rainbow_cycle(0)
 
 pixels_fill(BLACK)
+pixels_show()
