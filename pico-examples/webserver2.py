@@ -4,7 +4,8 @@ from picozero import pico_temp_sensor, pico_led
 SSID = 'YOUR_SSID'
 PASSWORD = 'YOUR_PASSWORD'
 
-connect_to_wifi(SSID, PASSWORD)
+ip = connect_to_wifi(SSID, PASSWORD)
+print(f'Connected on {ip}')
 
 
 def webpage(temperature, state):
@@ -28,7 +29,7 @@ def webpage(temperature, state):
 
 
 @server.route("/", ["GET"])
-def index(request, state='TEST'):
+def index(request, state='?'):
     temperature = pico_temp_sensor.temp
     response = webpage(temperature, state)
     return response
@@ -54,6 +55,8 @@ def check_state(request, command):
     elif '1' in command:
         state = 'ON'
         pico_led.on()
+    else:
+        state = '?'
     return index(request, state)
 
 
