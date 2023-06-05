@@ -28,7 +28,7 @@ def webpage(temperature, state):
     return str(html)
 
 
-@server.route("/", ["GET"])
+@server.route("/", methods=["GET"])
 def index(request, state='?'):
     temperature = pico_temp_sensor.temp
     response = webpage(temperature, state)
