@@ -41,6 +41,7 @@ def demo(np):
                 val = 255 - (i & 0xff)
             np[j] = (val, 0, 0)
         np.write()
+        time.sleep_ms(60)
 
     # clear
     for i in range(n):
