@@ -1,13 +1,13 @@
 from machine import Pin, SPI
 # import math
 import max7219
-from time import sleep
+from utime import sleep
 
 spi = SPI(0, baudrate=8000000, polarity=1, phase=0, sck=Pin(2), mosi=Pin(3))
 cs = Pin(5, Pin.OUT)
-
 n = 8
-display = max7219.Matrix8x8(spi, cs, n)
+
+display = max7219.Matrix8x8(spi=spi, cs=cs, num=n)
 display.brightness(1)
 
 text1 = "Hello"

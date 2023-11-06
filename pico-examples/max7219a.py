@@ -1,6 +1,6 @@
 from machine import Pin, SPI
 import max7219
-from time import sleep
+from utime import sleep
 
 
 class matrix():
@@ -10,7 +10,7 @@ class matrix():
         self.MAX7219_SCROLL_DELAY = 0.03
         cs_pin = 5
 
-        spi = SPI(0)
+        spi = SPI(0, baudrate=8000000, polarity=1, phase=0, sck=Pin(2), mosi=Pin(3))
         self.display = max7219.Matrix8x8(spi=spi, cs=Pin(cs_pin), num=self.MAX7219_NUM)
         self.display.brightness(1)
 
@@ -19,7 +19,7 @@ class matrix():
             self.MAX7219_SCROLL_DELAY = scroll_delay
 
         p = self.MAX7219_NUM * 8
-        for p in range(self.MAX7219_NUM * 8, len(text) * -8 - 1, -1):
+        for p in range(self.MAX7219_NUM * 8, -(len(text) * 8) - 1, -1):
             self.display.fill(self.MAX7219_INVERT)
             self.display.text(text, p, 1, not self.MAX7219_INVERT)
             self.display.show()
