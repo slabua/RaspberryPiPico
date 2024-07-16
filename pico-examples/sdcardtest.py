@@ -13,12 +13,12 @@ spi = SPI(
 )
 
 sd = sdcard.SDCard(spi, cs_pin)
-os.mount(sd, '/sd')
-os.chdir('sd')
+os.mount(sd, "/sd")
+os.chdir("sd")
 os.listdir()
 
-file = open('/sd/test.txt', 'w')
+file = open("/sd/test.txt", "w")
 file.write(str(time.localtime()))
 file.close()
 
-print(open('test.txt').read())
+print(open("test.txt").read())
